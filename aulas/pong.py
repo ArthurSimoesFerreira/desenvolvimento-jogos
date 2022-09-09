@@ -17,9 +17,10 @@ while(True):
     janela.update()
     janela.set_background_color(RGB=[0,0,0])
     bola.draw()
-    bola.move_x(velx) ## bola.x = bola.x + velx
-    bola.move_y(vely) ## bola.y = bola.y + vely
+    bola.move_x(velx) # bola.x = bola.x + velx
+    bola.move_y(vely) # bola.y = bola.y + vely
     
+    # Colisões
     if bola.x + bola.width == janela.width or bola.x == 0:
         velx = -velx
     elif bola.y + bola.height == janela.height or bola.y == 0:
