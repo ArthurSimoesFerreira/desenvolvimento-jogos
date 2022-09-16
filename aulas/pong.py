@@ -21,7 +21,7 @@ while(True):
     bola.move_y(vely) # bola.y = bola.y + vely
     
     # Colisões
-    if bola.x + bola.width == janela.width or bola.x == 0:
+    if bola.x + bola.width >= janela.width or bola.x <= 0:
         velx = -velx
-    elif bola.y + bola.height == janela.height or bola.y == 0:
+    elif bola.y + bola.height >= janela.height or bola.y <= 0:
         vely = -vely
