@@ -46,6 +46,16 @@ while(True):
     elif bola.y + bola.height + velyBola * janela.delta_time() >= janela.height or bola.y + velyBola * janela.delta_time() <= 0:
         velyBola = -velyBola
     
+    if rpad.y + velyPad * janela.delta_time() < 0:
+        rpad.y = 0
+    elif rpad.y + rpad.height + velyPad * janela.delta_time() > janela.height:
+        rpad.y = janela.height - rpad.height
+
+    if lpad.y + velyPad * janela.delta_time() < 0:
+        lpad.y = 0
+    elif lpad.y + lpad.height + velyPad * janela.delta_time() > janela.height:
+        lpad.y = janela.height - lpad.height
+ 
     # Pad
     lpad.draw()
     rpad.draw()
