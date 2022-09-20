@@ -3,9 +3,20 @@ from PPlay.sprite import*
 from PPlay.keyboard import*
 from PPlay.collision import*
 
+
+#Pontos
+rpontos = 0
+lpontos = 0
+
+#Fonte 
+fonte = pygame.font.SysFont('arial', 40, True, False)
+
 # Janela
 janela = Window(600, 600)
 janela.set_background_color(RGB=[0,0,0])
+
+# Tela
+tela = Window.screen
 
 # Pad
 rpad = Sprite("pad.png", 1)
@@ -40,9 +51,20 @@ while(True):
     # Colisões
     if Collision.collided(bola, rpad) or Collision.collided(bola, lpad):
         velxBola = -velxBola
-    if bola.x + velxBola * janela.delta_time() >= janela.width or bola.x + bola.width + velxBola * janela.delta_time() <= 0:
+
+    # colisão bola com lado direito
+    if bola.x + velxBola * janela.delta_time() >= janela.width:
         bola.x = janela.width/2 - bola.width/2
         bola.y = janela.height/2 - bola.height/2
+        lpontos += 1
+
+    # colisão bola com lado esquerdo    
+    elif bola.x + bola.width + velxBola * janela.delta_time() <= 0:  
+        bola.x = janela.width/2 - bola.width/2
+        bola.y = janela.height/2 - bola.height/2
+        rpontos += 1
+
+    # colisão bola com lados de cima e de baixo
     elif bola.y + bola.height + velyBola * janela.delta_time() >= janela.height or bola.y + velyBola * janela.delta_time() <= 0:
         velyBola = -velyBola
     
@@ -69,3 +91,12 @@ while(True):
         lpad.move_y(-velyPad * janela.delta_time())
     elif teclado.key_pressed("S"):
         lpad.move_y(velyPad * janela.delta_time())
+
+    # Placar de pontos
+    mensagemPontos = f"{lpontos}    {rpontos}"
+    agrupamentoPontos = fonte.render(mensagemPontos, False, (255,255,255))
+    textoPontos = agrupamentoPontos.get_rect()
+    textoPontos.center = (janela.width/2, janela.height/2)
+    tela.blit(agrupamentoPontos, (janela.width/2 - textoPontos.width/2 ,50))
+
+    
