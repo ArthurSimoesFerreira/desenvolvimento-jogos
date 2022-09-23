@@ -6,7 +6,7 @@ from PPlay.collision import*
 
 #Pontos
 rpontos = 0
-lpontos = 0
+lpontos = -1
 
 #Fonte 
 fonte = pygame.font.SysFont('arial', 40, True, False)
