@@ -32,7 +32,7 @@ rpad.y = janela.height/2 - rpad.height/2
 lpad = Sprite("pad.png", 1)
 lpad.x = 1
 lpad.y = janela.height/2 - lpad.height/2
-velyPad = 0.3
+velyPad = 0.35
 
 # Bola 1
 bola1 = Sprite("bolinha.png", 1)
