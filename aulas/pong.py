@@ -29,7 +29,7 @@ lpad.y = janela.height/2 - lpad.height/2
 
 velyPad = 0.2
 
-# Bolinha
+# Bola 1
 bola = Sprite("bolinha.png", 1)
 bola.x = janela.width/2 - bola.width/2
 bola.y = janela.height/2 - bola.height/2
@@ -55,19 +55,19 @@ while(True):
         bola.x += 1
         velxBola = -velxBola
 
-    # colisão bola com lado direito
+    # Colisão bola com lado direito
     if bola.x + velxBola * janela.delta_time() >= janela.width:
         bola.x = janela.width/2 - bola.width/2
         bola.y = janela.height/2 - bola.height/2
         lpontos += 1
 
-    # colisão bola com lado esquerdo    
+    # Colisão bola com lado esquerdo    
     elif bola.x + bola.width + velxBola * janela.delta_time() <= 0:  
         bola.x = janela.width/2 - bola.width/2
         bola.y = janela.height/2 - bola.height/2
         rpontos += 1
 
-    # colisão bola com lados de cima e de baixo
+    # Colisão bola com lados de cima e de baixo
     elif bola.y + bola.height + velyBola * janela.delta_time() >= janela.height or bola.y + velyBola * janela.delta_time() <= 0:
         velyBola = -velyBola
     
@@ -91,12 +91,12 @@ while(True):
             rpad.move_y(-velyPad)
         else:
             rpad.move_y(velyPad)
-    else:
-        if velyBola < 0:
-            lpad.move_y(-velyPad)
-        else:
-            lpad.move_y(velyPad)
-
+    
+    # Teclado
+    if teclado.key_pressed("W"):
+        lpad.move_y(-velyPad)
+    elif teclado.key_pressed("S"):
+        lpad.move_y(velyPad)
 
     # Placar de pontos
     mensagemPontos = f"{lpontos}    {rpontos}"
