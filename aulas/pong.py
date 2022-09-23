@@ -32,21 +32,21 @@ rpad.y = janela.height/2 - rpad.height/2
 lpad = Sprite("pad.png", 1)
 lpad.x = 1
 lpad.y = janela.height/2 - lpad.height/2
-velyPad = 0.2
+velyPad = 0.3
 
 # Bola 1
 bola1 = Sprite("bolinha.png", 1)
 bola1.x = janela.width/2 - bola1.width/2
 bola1.y = janela.height/2 - bola1.height/2
-velxBola1 = 300
-velyBola1 = 300
+velxBola1 = 450
+velyBola1 = 450
 
 # Bola 2
 bola2 = Sprite("bolinha.png", 1)
 bola2.x = janela.width/2 - bola2.width/2
 bola2.y = janela.height/2 - bola2.height/2
-velxBola2 = 300
-velyBola2 = 300
+velxBola2 = 450
+velyBola2 = 450
 
 # Teclado
 teclado = Window.get_keyboard()
