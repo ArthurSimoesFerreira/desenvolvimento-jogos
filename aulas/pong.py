@@ -36,15 +36,15 @@ velyPad = 0.35
 bola1 = Sprite("bolinha.png", 1)
 bola1.x = janela.width/2 - bola1.width/2
 bola1.y = janela.height/2 - bola1.height/2
-velxBola1 = 450
-velyBola1 = 450
+velxBola1 = 400
+velyBola1 = 400
 
 # Bola 2
 bola2 = Sprite("bolinha.png", 1)
 bola2.x = janela.width/2 - bola2.width/2
 bola2.y = janela.height/2 - bola2.height/2
-velxBola2 = 450
-velyBola2 = 450
+velxBola2 = 400
+velyBola2 = 400
 
 # Teclado
 teclado = Window.get_keyboard()
