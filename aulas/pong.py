@@ -4,11 +4,13 @@ from PPlay.keyboard import*
 from PPlay.collision import*
 
 
-#Pontos
+# Variáveis Numéricas e Booleanas
 rpontos = 0
 lpontos = 0
+colisoesComPad = 0
+duasBolinhas = False
 
-#Fonte 
+# Fonte 
 fonte = pygame.font.SysFont('arial', 40, True, False)
 
 # Janela
@@ -30,45 +32,63 @@ lpad.y = janela.height/2 - lpad.height/2
 velyPad = 0.2
 
 # Bola 1
-bola = Sprite("bolinha.png", 1)
-bola.x = janela.width/2 - bola.width/2
-bola.y = janela.height/2 - bola.height/2
-velxBola = 300  # 0.5 pixels/frame
+bola1 = Sprite("bolinha.png", 1)
+bola1.x = janela.width/2 - bola1.width/2
+bola1.y = janela.height/2 - bola1.height/2
+velxBola = 300  
 velyBola = 300 
+
+# Bola 2
+bola2 = Sprite("bolinha.png", 1)
+bola2.x = janela.width/2 - bola2.width/2
+bola2.y = janela.height/2 - bola2.height/2
+velxBola2 = 300  
+velyBola2 = 300 
 
 # Teclado
 teclado = Window.get_keyboard()
+
 
 # Game Loop
 while(True):
     janela.update()
     janela.set_background_color(RGB=[0,0,0])
-    bola.draw()
-    bola.move_x(velxBola * janela.delta_time()) # bola.x = bola.x + velxBola
-    bola.move_y(velyBola * janela.delta_time()) # bola.y = bola.y + velyBola
+    bola1.draw()
+    bola1.move_x(velxBola * janela.delta_time()) # bola1.x = bola1.x + velxBola
+    bola1.move_y(velyBola * janela.delta_time()) # bola1.y = bola1.y + velyBola
     
-    # Colisões
-    if Collision.collided(bola, rpad):
-        bola.x -= 1
+    # Colisões da Bola1 com Pads
+    if Collision.collided(bola1, rpad):
+        bola1.x -= 1
         velxBola = -velxBola
-    elif Collision.collided(bola, lpad):
-        bola.x += 1
+        if not(duasBolinhas):
+            colisoesComPad += 1
+    elif Collision.collided(bola1, lpad):
+        bola1.x += 1
         velxBola = -velxBola
+        if not(duasBolinhas):
+            colisoesComPad += 1
+    
+    # Aparição da nova Bolinha
+        if colisoesComPad == 3:
+            duasBolinhas = True
 
-    # Colisão bola com lado direito
-    if bola.x + velxBola * janela.delta_time() >= janela.width:
-        bola.x = janela.width/2 - bola.width/2
-        bola.y = janela.height/2 - bola.height/2
+    
+
+    # Colisão bola1 com lado direito
+    if bola1.x + velxBola * janela.delta_time() >= janela.width:
+        bola1.x = janela.width/2 - bola1.width/2
+        bola1.y = janela.height/2 - bola1.height/2
         lpontos += 1
 
-    # Colisão bola com lado esquerdo    
-    elif bola.x + bola.width + velxBola * janela.delta_time() <= 0:  
-        bola.x = janela.width/2 - bola.width/2
-        bola.y = janela.height/2 - bola.height/2
+    # Colisão bola1 com lado esquerdo    
+    elif bola1.x + bola1.width + velxBola * janela.delta_time() <= 0:  
+        bola1.x = janela.width/2 - bola1.width/2
+        bola1.y = janela.height/2 - bola1.height/2
         rpontos += 1
 
-    # Colisão bola com lados de cima e de baixo
-    elif bola.y + bola.height + velyBola * janela.delta_time() >= janela.height or bola.y + velyBola * janela.delta_time() <= 0:
+    # Colisão bola1 com lados de cima e de baixo
+    elif bola1.y + bola1.height + velyBola * janela.delta_time() >= janela.height or bola1.y + velyBola * janela.delta_time() <= 0:
         velyBola = -velyBola
     
     if rpad.y + velyPad * janela.delta_time() < 0:
