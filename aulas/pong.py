@@ -69,12 +69,6 @@ while(True):
         if not(duasBolinhas):
             colisoesComPad += 1
     
-    # Aparição da nova Bolinha
-        if colisoesComPad == 3:
-            duasBolinhas = True
-
-    
-
     # Colisão bola1 com lado direito
     if bola1.x + velxBola * janela.delta_time() >= janela.width:
         bola1.x = janela.width/2 - bola1.width/2
