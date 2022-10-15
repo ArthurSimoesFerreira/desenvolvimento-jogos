@@ -1,11 +1,12 @@
+from this import d
 from PPlay.window import *
 from PPlay.sprite import *
 from PPlay.gameimage import *
 from PPlay.mouse import*
 from game import *
 
-def menu():
-
+def menu(difficulty):
+    
     window = Window(900,600)
     mouse = window.get_mouse()
 
@@ -41,12 +42,12 @@ def menu():
         
         if mouse.is_button_pressed(1):
             if mouse.is_over_object(buttonPlay):
-                game()
+                game(difficulty)
             
             if mouse.is_over_object(buttonRanking):
                 pass
             if mouse.is_over_object(buttonDifficulty):
-                menuDifficulty()
+                difficulty = menuDifficulty()
                 
             if mouse.is_over_object(buttonExit):
                 window.close()      
@@ -81,6 +82,14 @@ def menuDifficulty():
         buttonMedium.draw()
         buttonHard.draw()
         buttonBack.draw()
+        
+        if mouse.is_over_object(buttonEasy) and mouse.is_button_pressed(1):
+            menu(0.2)
+        if mouse.is_over_object(buttonMedium) and mouse.is_button_pressed(1):
+            menu(0.5)
+        if mouse.is_over_object(buttonHard) and mouse.is_button_pressed(1):
+            menu(0.7)
+        
 
         if keyboard.key_pressed("ESC") or (mouse.is_button_pressed(1) and mouse.is_over_object(buttonBack)):
-            menu()
+            menu(0.5)
