@@ -10,7 +10,7 @@ def game(difficulty):
     window = Window(900,600)
     keyboard = window.get_keyboard()
 
-    spaceShip = Sprite("spaceship.png",1)
+    spaceShip = Sprite("Space_Invaders\\assets\\spaceship.png",1)
     spaceShip.x = window.width/2 - spaceShip.width/2
     spaceShip.y = window.height - spaceShip.height
     velxSpaceShip = 200
@@ -40,7 +40,7 @@ def game(difficulty):
 
         # Shot
         if keyboard.key_pressed("SPACE") and crono >= difficulty:
-            shot = Sprite("shot.png")
+            shot = Sprite("Space_Invaders\\assets\\shot.png")
             shot.x = spaceShip.x + 10
             shot.y = spaceShip.y 
             shotList.append(shot)

@@ -5,14 +5,14 @@ from PPlay.keyboard import*
 
 def showMonsters(window, monsterList):
     
-    monster = Sprite("monster.png")
+    monster = Sprite("Space_Invaders\\assets\\monster.png")
     monsterSubList = []
     x = window.width/2 - 2 * monster.width
     y = 0 
 
     for i in range(4):
         for j in range(4):
-            monster = Sprite("monster.png")
+            monster = Sprite("Space_Invaders\\assets\\monster.png")
             monsterSubList.append(monster)
             monsterSubList[j].x = x
             monsterSubList[j].y = y

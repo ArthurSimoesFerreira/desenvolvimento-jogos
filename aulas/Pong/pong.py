@@ -24,23 +24,23 @@ janela.set_background_color(RGB=[0,0,0])
 tela = Window.screen
 
 # Pad
-rpad = Sprite("pad.png", 1)
+rpad = Sprite("Pong\\pad.png", 1)
 rpad.x = janela.width - rpad.width - 1
 rpad.y = janela.height/2 - rpad.height/2
-lpad = Sprite("pad.png", 1)
+lpad = Sprite("Pong\\pad.png", 1)
 lpad.x = 1
 lpad.y = janela.height/2 - lpad.height/2
 velyPad = 0.35
 
 # Bola 1
-bola1 = Sprite("bolinha.png", 1)
+bola1 = Sprite("Pong\\bolinha.png", 1)
 bola1.x = janela.width/2 - bola1.width/2
 bola1.y = janela.height/2 - bola1.height/2
 velxBola1 = 400
 velyBola1 = 400
 
 # Bola 2
-bola2 = Sprite("bolinha.png", 1)
+bola2 = Sprite("Pong\\bolinha.png", 1)
 bola2.x = janela.width/2 - bola2.width/2
 bola2.y = janela.height/2 - bola2.height/2
 velxBola2 = 400

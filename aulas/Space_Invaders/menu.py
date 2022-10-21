@@ -10,22 +10,22 @@ def menu(difficulty):
     window = Window(900,600)
     mouse = window.get_mouse()
 
-    backgroundMenu = GameImage("background_space_invaders.png")
+    backgroundMenu = GameImage("Space_Invaders\\assets\\background_space_invaders.png")
     backgroundMenu.set_position(0, 0)
 
-    buttonPlay = Sprite("button_play.png",1)
+    buttonPlay = Sprite("Space_Invaders\\assets\\button_play.png",1)
     buttonPlay.x = window.width/5 - buttonPlay.width/2
     buttonPlay.y = 500 - buttonPlay.height
 
-    buttonRanking = Sprite("button_ranking.png",1) 
+    buttonRanking = Sprite("Space_Invaders\\assets\\button_ranking.png",1) 
     buttonRanking.x = window.width*2/5 - buttonRanking.width/2
     buttonRanking.y = 500 - buttonRanking.height
 
-    buttonDifficulty = Sprite("button_difficulty.png",1) 
+    buttonDifficulty = Sprite("Space_Invaders\\assets\\button_difficulty.png",1) 
     buttonDifficulty.x = window.width*3/5 - buttonDifficulty.width/2
     buttonDifficulty.y = 500 - buttonDifficulty.height
 
-    buttonExit = Sprite("button_exit.png",1)
+    buttonExit = Sprite("Space_Invaders\\assets\\button_exit.png",1)
     buttonExit.x = window.width*4/5 - buttonExit.width/2
     buttonExit.y = 500 - buttonExit.height
 
