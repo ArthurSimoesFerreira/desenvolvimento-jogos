@@ -36,8 +36,8 @@ window.set_title(title)
 window.set_background_color(background_color)
 
 #Background Images
-background_01 = GameImage("space_invaders_final\\assets\\background_space_invaders.png")
-background_02 = GameImage("space_invaders_final\\assets\\background_space.png")
+background_01 = GameImage("aulas\\space_invaders_final\\assets\\background_space_invaders.png")
+background_02 = GameImage("aulas\\space_invaders_final\\assets\\background_space.png")
 # Respectivas posições iniciais
 background_01.y = 0
 background_02.y = 0
@@ -52,7 +52,7 @@ mouse = window.get_mouse()
 # bullet_sound = Sound("bullet_sound.ogg")
 
 # Sprite da nave do jogador
-player = Sprite("space_invaders_final\\assets\\spaceship.png")
+player = Sprite("aulas\\space_invaders_final\\assets\\spaceship.png")
  
 # Posição inicial
 player.set_position((window.width - player.width)/2, (window.height - player.height))
@@ -64,25 +64,27 @@ player.direction = -1  # [cima]
 player.score = 0
 
 # Sprite dos inimigos
-enemy_image = "space_invaders_final\\assets\\monster.png"
+enemy_image = "aulas\\space_invaders_final\\assets\\monster.png"
 # Velocidade dos inimigos
 enemy_speed = 200  
 # Direção dos inimigos
 enemy_direction = 1  # [baixo] 
 # Numero de linhas da matriz
-matrix_x = 6
+matrix_x = 5
 # Numero de coluna da matriz
-matrix_y = 6
+matrix_y = 5
+# Variável de controle para descida dos enemies
+going_down = False
 
 # Sprite dos botões
-button_back = Sprite("space_invaders_final\\assets\\button_back.png")
-button_difficulty = Sprite("space_invaders_final\\assets\\button_difficulty.png")
-button_easy = Sprite("space_invaders_final\\assets\\button_easy.png")
-button_exit = Sprite("space_invaders_final\\assets\\button_exit.png")
-button_hard = Sprite("space_invaders_final\\assets\\button_hard.png")
-button_medium = Sprite("space_invaders_final\\assets\\button_medium.png")
-button_play = Sprite("space_invaders_final\\assets\\button_play.png")
-button_ranking = Sprite("space_invaders_final\\assets\\button_ranking.png")
+button_back = Sprite("aulas\\space_invaders_final\\assets\\button_back.png")
+button_difficulty = Sprite("aulas\\space_invaders_final\\assets\\button_difficulty.png")
+button_easy = Sprite("aulas\\space_invaders_final\\assets\\button_easy.png")
+button_exit = Sprite("aulas\\space_invaders_final\\assets\\button_exit.png")
+button_hard = Sprite("aulas\\space_invaders_final\\assets\\button_hard.png")
+button_medium = Sprite("aulas\\space_invaders_final\\assets\\button_medium.png")
+button_play = Sprite("aulas\\space_invaders_final\\assets\\button_play.png")
+button_ranking = Sprite("aulas\\space_invaders_final\\assets\\button_ranking.png")
 # Posição dos botões
 button_back.x = 30
 button_back.y = 30
@@ -144,12 +146,18 @@ def enemy_movement():
     """
 
     global enemy_direction
-
+    global going_down
     # Cria variável de controle
     inverted = False
 
     # Calcula a nova posição da matriz de inimigos
-    new_position = enemy_speed * enemy_direction * window.delta_time() * SPEED
+    new_position_x = enemy_speed * enemy_direction * window.delta_time() * SPEED
+    new_position_y = abs(enemy_speed) * window.delta_time() * SPEED * 10
+
+
+    if (going_down):
+        going_down = enemy_down_movement(new_position_y)
+        going_down = False
 
     # Percorre toda a matriz de inimigos
     for row in range(matrix_x):
@@ -158,7 +166,7 @@ def enemy_movement():
             # ainda esteja vivo, efetua as ações em seguida
             if enemies[row][column] != 0:
                 # Move o inimigo para sua nova posição
-                enemies[row][column].move_x(new_position)
+                enemies[row][column].move_x(new_position_x)
 
                 # Caso já tenha alcançado o intervalo de disparo,
                 # efetua um novo disparo
@@ -171,16 +179,38 @@ def enemy_movement():
 
                 # Verifica se nenhuma extremidade da matriz bateu na parede
                 if not inverted:
-                    # Se bateu na parede, então inverte a direção da matriz
+                    # Se bateu na parede, então inverte a direção da matriz e anda para baixo
                     # Altera direção para direita
                     if enemies[row][column].x <= 0:                         
                         enemy_direction = 1                         
-                        inverted = True                     
+                        inverted = True           
+                        going_down = True    
                         # Altera direção para esquerda                     
                     elif enemies[row][column].x + Sprite(enemy_image).width >= window.width:
                         enemy_direction = -1
                         inverted = True
+                        going_down = True    
+
                     
+
+def enemy_down_movement(new_position_y):
+    for row in range(matrix_x):
+        for column in range(matrix_y):
+            # Caso a posição esteja preenchida, isto é, o inimigo
+            # ainda esteja vivo, efetua as ações em seguida
+            if enemies[row][column] != 0:
+                # Move o inimigo para sua nova posição (Para baixo)
+                enemies[row][column].move_y(new_position_y)
+
+
+def enemy_player_collision():
+    global GAME_STATE
+
+    for row in range(matrix_x):
+        for column in range(matrix_y):
+            if enemies[row][column].y + Sprite(enemy_image).height > player.y:
+                GAME_STATE = 4
+
 
 
 def spawn_enemy():
@@ -191,6 +221,8 @@ def spawn_enemy():
     :param enemy_matrix: matriz de inimigos
     """
     global enemies
+    global matrix_x
+    global matrix_y
 
     enemies = [[0 for _ in range(matrix_y)] for _ in range(matrix_x)]
 
@@ -290,7 +322,7 @@ def bullet_movement():
     for b in bullets:
  
         # Atualiza a sua posição, baseado em sua direção
-        b.move_y(200 * b.direction * window.delta_time() * SPEED)
+        b.move_y(250 * b.direction * window.delta_time() * SPEED)
  
         # Verifica se saiu da tela e, caso tenha saído, destrói o projétil
         if b.y < -b.height or b.y > window.height + b.height:
@@ -367,18 +399,18 @@ def difficulty_window():
             GAME_STATE = 0
         if mouse.is_over_object(button_easy):
             SPEED = 1
-            matrix_x = 6
-            matrix_y = 6
+            matrix_x = 4
+            matrix_y = 4
             GAME_STATE = 0
         if mouse.is_over_object(button_medium):
-            SPEED = 1.3
-            matrix_x = 8
-            matrix_y = 7
+            SPEED = 1.1
+            matrix_x = 5
+            matrix_y = 5
             GAME_STATE = 0
         if mouse.is_over_object(button_hard):
-            SPEED = 1.5
-            matrix_x = 10
-            matrix_y = 9
+            SPEED = 1.2
+            matrix_x = 6
+            matrix_y = 6
             GAME_STATE = 0
 
 
@@ -424,6 +456,9 @@ while True:
         # Verifica a colisão de projéteis contra naves
         bullet_ship_collision()
  
+        # Verifica a colisão entre os inimigos e o player
+        enemy_player_collision()
+
         # Verifica colisões entre projéteis
         bullet_bullet_collision(bullets)
  

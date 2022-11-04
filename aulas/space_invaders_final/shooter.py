@@ -15,9 +15,9 @@ def shoot(shooter, bullets):
  
     # Cria uma nova bullet, dependendo de quem for que atirou
     if shooter.direction == -1:
-        b = Sprite("space_invaders_final\\assets\\shot.png")
+        b = Sprite("aulas\\space_invaders_final\\assets\\shot.png")
     elif shooter.direction == 1:
-        b = Sprite("space_invaders_final\\assets\\shot_monster.png")
+        b = Sprite("aulas\\space_invaders_final\\assets\\shot_monster.png")
          
     # Ajusta a posição inicial e a direção do projétil
     adjust_bullet(shooter, b)
