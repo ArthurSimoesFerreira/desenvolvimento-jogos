@@ -156,6 +156,7 @@ def enemy_movement():
 
 
     if (going_down):
+        # Move o inimigos para baixo
         going_down = enemy_down_movement(new_position_y)
         going_down = False
 
