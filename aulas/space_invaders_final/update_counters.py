@@ -10,5 +10,5 @@ def update_counters(player, matrix_x, matrix_y, enemies, window):
     # presente na matriz de inimigos
     for row in range(matrix_x):
         for column in range(matrix_y):
-            if enemies[row][column] != 0:
+            if enemies[row][column].exist != 0:
                 enemies[row][column].shoot_tick += window.delta_time()

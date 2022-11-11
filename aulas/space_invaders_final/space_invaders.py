@@ -4,10 +4,10 @@ from PPlay.gameimage import *
 import random
 from adjust_bullet import *
 from bullet_bullet_collision import *
-from check_enemy_collision import *
 from draw import *
 from shooter import *
 from update_counters import *
+from show_score import *
 
 random.seed()
 
@@ -110,6 +110,14 @@ enemies = [[0 for _ in range(10)] for _ in range(10)]
 enemy_shoot_delay = 1/SPEED 
 player.shoot_delay = 1/SPEED * 0.5
 player.shoot_tick = player.shoot_delay
+
+# Temporizadores
+time_score = 0
+time_fps = 0.1
+counter_frames = 0
+
+# FPS
+fps = counter_frames/time_fps
 
 def win():
     """
@@ -287,8 +295,8 @@ def restart_window():
  
     # Escreve na tela a pontuação do jogador
     window.draw_text("Sua pontuação foi:" +
-            str(player.score), 5,5, 25, (255,255,255), "Calibri", True)
- 
+            str(round(player.score)), 5,5, 25, (255,255,255), "Calibri", True)
+
     if mouse.is_button_pressed(1):
         # Clicou em "BACK"
         if mouse.is_over_object(button_back):
@@ -359,14 +367,67 @@ def bullet_ship_collision():
        # Se for disparo do jogador
        if b.direction == -1:
            # Verifica se bateu em algum inimigo
-           check_enemy_collision(b, matrix_x, matrix_y, enemies, bullets, player)
- 
+           check_enemy_collision(b)
        # Se for disparo do inimigo
        elif b.direction == 1:
            # Verifica se bateu no jogador
            if b.collided(player):
                # Se bateu no jogador, define o fim de jogo
                GAME_STATE = 4
+
+
+def check_enemy_collision(b):
+    """
+    Verifica se o projétil colidiu com o inimigo
+    :param b: Instância de projétil
+    """
+
+    global time_score
+
+    enemies.reverse()
+    # Adiciona o tempo na variável de tempo entre acertos
+    time_score += window.delta_time() 
+    # Percorre toda a matriz de inimigos
+    if b.x < enemies[-1][0].x or b.y < enemies[-1][0].y or b.x > enemies[0][-1].x or b.y > enemies[0][-1].y:
+        for row in range(matrix_x):
+            for column in range(matrix_y):
+                if enemies[row][column] != 0:
+                # Se o inimigo ainda estiver vivo (enemies<div class="row"></div><div class=""></div> != 0),
+                # verifica se o disparo b colidiu com o mesmo
+                    if b.collided(enemies[row][column]) and enemies[row][column].exist != 0:
+                    # Caso tenha havido colisão, remove a bala e o
+                    # inimigo do jogo
+
+                        bullets.remove(b)
+                        enemies[row][column].exist = 0
+
+                        # Atualiza a pontuação do jogador
+                        player.score += 60/time_score
+                        
+                        time_score = 0
+                        # Interrompe a função, pois o projétil foi destruído
+                        # e não poderá colidir com mais nenhum inimigo
+                        return
+
+
+
+def show_fps():
+
+    global time_fps
+    global counter_frames
+    global fps
+
+    window.draw_text("FPS: " + str(round(fps, 2)), window.width - 100,5, 15, (255,255,255), "Calibri", True)
+
+    counter_frames += 1
+
+    time_fps += window.delta_time()
+    if time_fps >= 1:
+        fps = counter_frames/time_fps
+        time_fps = 0.1
+        counter_frames = 0
+    
+
 
 def menu_window():
     global GAME_STATE
@@ -422,7 +483,7 @@ def difficulty_window():
 while True:
     # Apaga a tela completamente
     window.set_background_color(background_color)
- 
+
     # Se o estado de jogo for = 0, quer dizer que é a primeira
     # vez que o game loop é acionado. Logo, ele cria a janela do
     # jogo.
@@ -438,9 +499,13 @@ while True:
     # está acontecendo. 
     elif GAME_STATE == 3:
         background_02.draw()
+
  
         # Verifica se o jogador venceu a partida
         win()
+
+        # Mostra a pontuação
+        show_score(window, player)
  
         # Atualiza os contadores
         update_counters(player, matrix_x, matrix_y, enemies, window)
@@ -474,5 +539,8 @@ while True:
     elif GAME_STATE == 4:
         restart_window()
  
+    # Mostra o FPS
+    show_fps()
+
     # Atualiza a janela de jogo cada vez que o game loop roda
     window.update()
