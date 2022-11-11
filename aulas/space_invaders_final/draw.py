@@ -11,7 +11,7 @@ def draw(bullets, matrix_x, matrix_y, enemies, player):
     for row in range(matrix_x):
         for column in range(matrix_y):
             # Se o inimigo estiver vivo (!=0), desenha o inimigo
-            if enemies[row][column] != 0:
+            if enemies[row][column].exist != 0:
                 enemies[row][column].draw()
  
     # Desenha a nave do jogador

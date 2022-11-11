@@ -128,7 +128,7 @@ def win():
     for row in range(matrix_x):
         if won:
             for column in range(matrix_y):
-                if enemies[row][column] != 0:
+                if enemies[row][column].exist != 0:
                     # Se ele encontrar algum inimigo vivo, seta a variável
                     # won como False e quebra a cadeia de repetições
                     won = False
@@ -165,7 +165,7 @@ def enemy_movement():
         for column in range(matrix_y):
             # Caso a posição esteja preenchida, isto é, o inimigo
             # ainda esteja vivo, efetua as ações em seguida
-            if enemies[row][column] != 0:
+            if enemies[row][column].exist != 0:
                 # Move o inimigo para sua nova posição
                 enemies[row][column].move_x(new_position_x)
 
@@ -199,7 +199,7 @@ def enemy_down_movement(new_position_y):
         for column in range(matrix_y):
             # Caso a posição esteja preenchida, isto é, o inimigo
             # ainda esteja vivo, efetua as ações em seguida
-            if enemies[row][column] != 0:
+            if enemies[row][column].exist != 0:
                 # Move o inimigo para sua nova posição (Para baixo)
                 enemies[row][column].move_y(new_position_y)
 
@@ -209,8 +209,9 @@ def enemy_player_collision():
 
     for row in range(matrix_x):
         for column in range(matrix_y):
-            if enemies[row][column].y + Sprite(enemy_image).height > player.y:
-                GAME_STATE = 4
+            if enemies[row][column].exist != 0:
+                if enemies[row][column].y + Sprite(enemy_image).height > player.y:
+                    GAME_STATE = 4
 
 
 
@@ -240,6 +241,8 @@ def spawn_enemy():
             enemy.shoot_delay = random.uniform(0,15)/SPEED
             # Zera a variável de controle de disparos
             enemy.shoot_tick = 0
+            # Existência (0-> Não existe \ 1 -> Existe)
+            enemy.exist = 1
             # Coloca o inimigo recém criado na matriz
             enemies[x][y] = enemy
 
