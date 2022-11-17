@@ -62,6 +62,8 @@ player.speed = 200
 player.direction = -1  # [cima]
 # Pontuação
 player.score = 0
+# Vidas
+player.lives = 3
 
 # Sprite dos inimigos
 enemy_image = "aulas\\space_invaders_final\\assets\\monster.png"
@@ -278,6 +280,9 @@ def restart():
  
     # Reinicia os contadores de disparos
     player.shoot_tick = player.shoot_delay
+
+    # Reinicia as vidas do jogador
+    player.lives = 3
  
     spawn_enemy()
 
@@ -355,25 +360,32 @@ def player_shoot():
 
 
 def bullet_ship_collision():
-   """
-   Verifica se os disparos colidiram com alguma nave
-   """
- 
-   # Acessando variável global
-   global GAME_STATE
- 
-   # Para cada instância dos disparos
-   for b in bullets:
-       # Se for disparo do jogador
-       if b.direction == -1:
-           # Verifica se bateu em algum inimigo
-           check_enemy_collision(b)
-       # Se for disparo do inimigo
-       elif b.direction == 1:
-           # Verifica se bateu no jogador
-           if b.collided(player):
-               # Se bateu no jogador, define o fim de jogo
-               GAME_STATE = 4
+    """
+    Verifica se os disparos colidiram com alguma nave
+    """
+
+    # Acessando variável global
+    global GAME_STATE
+
+    # Para cada instância dos disparos
+    for b in bullets:
+        # Se for disparo do jogador
+        if b.direction == -1:
+            # Verifica se bateu em algum inimigo
+            check_enemy_collision(b)
+            # Se for disparo do inimigo
+        elif b.direction == 1:
+            # Verifica se bateu no jogador
+            if b.collided(player):
+                # Se bateu no jogador, diminui uma vida
+                player.lives -= 1
+                player.set_position(window.width/2 - player.width/2, window.height - player.height)
+                if player.lives == 0:
+                    GAME_STATE = 4
+                else:
+                    pass
+
+
 
 
 def check_enemy_collision(b):
@@ -431,6 +443,7 @@ def show_fps():
 
 def menu_window():
     global GAME_STATE
+    global player
 
     button_play.draw()
     button_ranking.draw()
