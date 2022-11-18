@@ -4,7 +4,6 @@ from PPlay.gameimage import *
 import random
 from adjust_bullet import *
 from bullet_bullet_collision import *
-from draw import *
 from shooter import *
 from update_counters import *
 from show_score import *
@@ -53,9 +52,13 @@ mouse = window.get_mouse()
 
 # Sprite da nave do jogador
 player = Sprite("aulas\\space_invaders_final\\assets\\spaceship.png")
- 
+# Sprite da nave opaca
+player_invincible = Sprite("aulas\\space_invaders_final\\assets\\spaceship_gray.png")
+
 # Posição inicial
 player.set_position((window.width - player.width)/2, (window.height - player.height))
+# Posição inicial do player_grey
+player_invincible.set_position(player.x, player.y)
 # Velocidade do jogador
 player.speed = 200
 # Direção do jogador
@@ -64,6 +67,10 @@ player.direction = -1  # [cima]
 player.score = 0
 # Vidas
 player.lives = 3
+# Invencível
+player.invincible = 0
+# Temporizador de invencibilidade player
+timer = 0
 
 # Sprite dos inimigos
 enemy_image = "aulas\\space_invaders_final\\assets\\monster.png"
@@ -376,16 +383,49 @@ def bullet_ship_collision():
             # Se for disparo do inimigo
         elif b.direction == 1:
             # Verifica se bateu no jogador
-            if b.collided(player):
+            if b.collided(player) and player.invincible == 0:
                 # Se bateu no jogador, diminui uma vida
                 player.lives -= 1
                 player.set_position(window.width/2 - player.width/2, window.height - player.height)
                 if player.lives == 0:
                     GAME_STATE = 4
+                elif player.lives > 0:
+                    player.invincible = 1
                 else:
                     pass
 
 
+def draw():
+    """
+    Desenha todos os elementos na tela
+    """
+
+    global timer
+ 
+    # Desenha todas as instâncias de projétil
+    for b in bullets:
+        b.draw()
+ 
+    # Percorre todo a matriz de inimigos
+    for row in range(matrix_x):
+        for column in range(matrix_y):
+            # Se o inimigo estiver vivo (!=0), desenha o inimigo
+            if enemies[row][column].exist != 0:
+                enemies[row][column].draw()
+ 
+    # Desenha a nave do jogador
+    if player.invincible == 0:
+        player.draw()
+    elif player.invincible == 1:
+        if (timer <= 0.5) or (timer > 1.0 and timer <= 1.5):
+            player_invincible.draw()
+        if (timer > 0.5 and timer <= 1) or (timer > 1.5 and timer <= 2.0):
+            player.draw()
+        if (timer > 2.0):
+            timer = 0
+            player.invincible = 0
+        timer += window.delta_time()
+    
 
 
 def check_enemy_collision(b):
@@ -524,7 +564,8 @@ while True:
         update_counters(player, matrix_x, matrix_y, enemies, window)
  
         # Atualiza a movimentação do jogador
-        player_movement()
+        if player.invincible == 0:
+            player_movement()
  
         # Controle os tiros a cada intervalo
         player_shoot()
@@ -545,7 +586,7 @@ while True:
         bullet_bullet_collision(bullets)
  
         ## Renderiza todos os dados na tela ##
-        draw(bullets, matrix_x, matrix_y, enemies, player)
+        draw()
  
     # Caso o jogo tenha terminado (GAME_STATE = 2), reinicia
     # a partida do jogo.
