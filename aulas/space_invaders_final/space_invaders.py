@@ -54,6 +54,8 @@ mouse = window.get_mouse()
 player = Sprite("aulas\\space_invaders_final\\assets\\spaceship.png")
 # Sprite da nave opaca
 player_invincible = Sprite("aulas\\space_invaders_final\\assets\\spaceship_gray.png")
+# Declaro o nome do player
+player_name = ""
 
 # Posição inicial
 player.set_position((window.width - player.width)/2, (window.height - player.height))
@@ -135,7 +137,9 @@ def win():
     """
  
     # Criamos o acesso às variáveis globais
-    global GAME_STATE
+    global matrix_x
+    global matrix_y
+    global SPEED
     global enemies
 
     # Criamos uma variável de controle, para sabermos se o jogador ganhou o jogo
@@ -153,8 +157,13 @@ def win():
  
     if won:
         # Se o jogo percorrer toda a matriz e não encontrar 
-        # nenhum inimigo vivo, reinicia o jogo
-        GAME_STATE = 4
+        # nenhum inimigo vivo, cria uma nova fase com uma dificuldade maior
+        SPEED += 0.1
+        matrix_x += 1
+        matrix_y += 1
+        restart()
+
+        
 
 
 def enemy_movement():
@@ -275,21 +284,27 @@ def restart():
     # Gera o acesso às variáveis globais
     global matrix_x
     global matrix_y
+    global player_name
 
     # Deleta todos os objetos enemies e bullets
     enemies.clear()
     bullets.clear()
- 
-    # Retorna o jogador à posição e pontuação inicial do jogo
-    player.score = 0
+    
+    # Caso o player tiver morrido
+    if player.lives == 0:
+        # Zera pontuação inicial do jogo(Caso ele tenha morrido 3 vezes)
+        player.score = 0
+        # Reinicia as vidas do jogador
+        player.lives = 3
+        # Zera a varíavel do nome do jogador
+        player_name = ""
+
+    # Retorna o jogador à posição
     player.set_position((window.width - player.width)/2,
                         (window.height - player.height))
  
     # Reinicia os contadores de disparos
     player.shoot_tick = player.shoot_delay
-
-    # Reinicia as vidas do jogador
-    player.lives = 3
  
     spawn_enemy()
 
@@ -308,6 +323,8 @@ def restart_window():
     # Escreve na tela a pontuação do jogador
     window.draw_text("Sua pontuação foi:" +
             str(round(player.score)), 5,5, 25, (255,255,255), "Calibri", True)
+
+    write_in_ranking()
 
     if mouse.is_button_pressed(1):
         # Clicou em "BACK"
@@ -480,6 +497,16 @@ def show_fps():
         counter_frames = 0
     
 
+def write_in_ranking():
+
+    global player_name
+
+    # Pergunto o nome da pessoa 
+    if not(player_name != ""):
+        player_name = input("Escreva seu nome: ")
+        with open("aulas\\space_invaders_final\\ranking.txt","a") as ranking:
+            ranking.write(player_name + " " + str(player.score) + " " + str(SPEED) + "\n")
+
 
 def menu_window():
     global GAME_STATE
@@ -588,7 +615,7 @@ while True:
         ## Renderiza todos os dados na tela ##
         draw()
  
-    # Caso o jogo tenha terminado (GAME_STATE = 2), reinicia
+    # Caso o jogo tenha terminado (GAME_STATE = 4), reinicia
     # a partida do jogo.
     elif GAME_STATE == 4:
         restart_window()
