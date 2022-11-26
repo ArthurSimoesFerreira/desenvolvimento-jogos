@@ -87,6 +87,21 @@ matrix_y = 5
 # Variável de controle para descida dos enemies
 going_down = False
 
+# Sprite do painel de score do ranking
+score_panel_image = "aulas\\space_invaders_final\\assets\\score_panel.png"
+# Lista de score score_panels_list
+score_panels_list = []
+# Posição x do painel
+score_panel_x = window.width/2 - 300
+# Lista de pontuação
+scores_list = []
+# Names List
+names_list = []
+# Lista de dificuldade
+difficulties_list = []
+# Lista de textos (nome pontuação)
+names_scores_list = []
+
 # Sprite dos botões
 button_back = Sprite("aulas\\space_invaders_final\\assets\\button_back.png")
 button_difficulty = Sprite("aulas\\space_invaders_final\\assets\\button_difficulty.png")
@@ -129,6 +144,12 @@ counter_frames = 0
 
 # FPS
 fps = counter_frames/time_fps
+
+# Fonte
+fonte = pygame.font.SysFont('ariel', 50, True, False)
+
+# Tela
+screen = window.screen
 
 def win():
     """
@@ -479,7 +500,6 @@ def check_enemy_collision(b):
                         return
 
 
-
 def show_fps():
 
     global time_fps
@@ -521,11 +541,16 @@ def menu_window():
             GAME_STATE = 3
             restart()
         if mouse.is_over_object(button_ranking):
-            pass
+            create_ranking_lists()
+            create_panels()
+            GAME_STATE = 2
+            button_ranking.x = window.width/2 - button_ranking.width/2
+            button_ranking.y = 0
         if mouse.is_over_object(button_difficulty):
             GAME_STATE = 1
         if mouse.is_over_object(button_exit):
             window.close()   
+
 
 def difficulty_window():
     global GAME_STATE
@@ -559,6 +584,147 @@ def difficulty_window():
             GAME_STATE = 0
 
 
+def ranking_window():
+
+    global GAME_STATE
+
+    button_ranking.draw()
+    button_back.draw()
+
+    # Volta para o menu caso aperte o back
+    if mouse.is_over_object(button_back) and mouse.is_button_pressed(1):
+        button_ranking.x = window.width*2/5 - button_ranking.width/2
+        button_ranking.y = 500 - button_ranking.height
+        GAME_STATE = 0
+    
+
+def create_ranking_lists():
+    """
+    Função que cria as listas de nomes, pontos, e dificuldades jogas
+    Todas sincronizadas
+    """
+
+    global scores_list
+    scores_list = []
+    global names_list
+    names_list = []
+    global difficulties_list
+    difficulties_list = []
+    global score_panels_list
+    score_panels_list = []
+
+    with open("aulas\\space_invaders_final\\ranking.txt","r") as ranking:
+        # Leio uma linha
+        line = ranking.readline()
+        # Enquanto ainda houver nomes e pontuações
+        while line != "":
+            # Pego o nome
+            name = (line.split())[0]
+            # Pego a ponutação
+            score = float((line.split())[1])
+            # Pego a dificuldade jogada
+            difficulty = float((line.split())[2])
+            if len(scores_list) == 0:
+                names_list.append(name)
+                scores_list.append(score)
+                difficulties_list.append(difficulty)
+            else:
+                for i in range(len(scores_list)):
+                    if score < scores_list[i]:
+                        pass
+                    elif score > scores_list[i]:
+                        # Se o score for maior que o score atual da lista, insere na posição
+                        scores_list.insert(i, score)
+                        names_list.insert(i, name)
+                        difficulties_list.insert(i, difficulty)
+                        break
+                    elif score == scores_list[i]:
+                        # Caso for igual, compara as dificuldades jogadas
+                        if (difficulty) > difficulties_list[i]:
+                            scores_list.insert(i, score)
+                            names_list.insert(i, name)
+                            difficulties_list.insert(i, difficulty)
+                        if (difficulty) < difficulties_list[i]:
+                            scores_list.insert(i+1, score)
+                            names_list.insert(i+1, name)
+                            difficulties_list.insert(i+1, difficulty)
+                    if i == len(scores_list) - 1:
+                        names_list.append(name)
+                        scores_list.append(score)
+                        difficulties_list.append(difficulty)
+            line = ranking.readline()
+
+
+def create_panels():
+    """
+    Função que cria a lista de sprites do painel de pontos
+    """
+    global score_panels_list
+
+    score_panels_list = [0 for _ in range(len(scores_list))]
+
+    for i in range(len(score_panels_list)):
+        # Crio o sprite do painel de ponto
+        score_panel = Sprite(score_panel_image)
+        # Atribuo a propriedade (exist)
+        score_panel.exist = 0
+        # Atribuo a posição do painel
+        score_panel.y = (i * score_panel.height * 1.5 + button_ranking.height + 50)
+        score_panel.x = score_panel_x
+        # Ponho na lista
+        score_panels_list[i] = score_panel
+
+
+def draw_panels():
+    """
+    Função que desenha os painéis que estão na tela
+    """
+    for i in range(len(score_panels_list)):
+        if score_panels_list[i].exist == 1:
+            score_panels_list[i].draw()
+
+def panels_existence():
+    """
+    Função que verifica quais painéis estão na tela
+    """
+    for i in range(len(score_panels_list)):
+        if score_panels_list[i].y + score_panels_list[i].height < window.height and score_panels_list[i].y > button_ranking.height + 40:
+            score_panels_list[i].exist = 1
+        if score_panels_list[i].y + score_panels_list[i].height > window.height or score_panels_list[i].y < button_ranking.height + 40:
+            score_panels_list[i].exist = 0
+
+def create_scores_text():
+    """
+    Função que cria os textos das pontuações e posiciona
+    """
+
+    global names_scores_list
+
+    for i in range(len(score_panels_list)):
+
+        name = names_list[i]
+        score = scores_list[i]
+        panel = score_panels_list[i]
+
+        name_score_string = f"{name}:  {round(score, 2)}"
+        grouping_name_score = fonte.render(name_score_string, False, (255,255,0))
+        text_name_score = grouping_name_score.get_rect()
+        text_name_score.center = (panel.x + panel.width/2, panel.y + panel.height/2)
+        names_scores_list += text_name_score
+        if panel.exist == 1:
+            screen.blit(grouping_name_score, (panel.x + panel.width/2 - text_name_score.width/2 , panel.y + panel.height/2 - text_name_score.height/2))
+
+def scroll_ranking():
+    """
+    Função que faz os painéis irem para cima e para baixo com as setas
+    """
+    # Caso o último painel esteja na tela, não scrolla para baixo
+    if keyboard.key_pressed("DOWN") and score_panels_list[-1].exist == 0:
+        for i in range(len(score_panels_list)):
+            score_panels_list[i].y -= 5
+    if keyboard.key_pressed("UP") and score_panels_list[0].exist == 0:
+        for i in range(len(score_panels_list)):
+            score_panels_list[i].y += 5
 
 while True:
     # Apaga a tela completamente
@@ -571,10 +737,17 @@ while True:
         background_01.draw()
         menu_window()
         
-    if GAME_STATE == 1:
+    elif GAME_STATE == 1:
         background_02.draw()
         difficulty_window()
 
+    elif GAME_STATE == 2:
+        background_02.draw()
+        ranking_window()
+        panels_existence()
+        draw_panels()
+        create_scores_text()
+        scroll_ranking()
     # Se não for a primeira vez, quer dizer que a partida ainda
     # está acontecendo. 
     elif GAME_STATE == 3:
