@@ -517,15 +517,6 @@ def show_fps():
         counter_frames = 0
     
 
-def write_in_ranking():
-
-    global player_name
-
-    # Pergunto o nome da pessoa 
-    if not(player_name != ""):
-        player_name = input("Escreva seu nome: ")
-        with open("aulas\\space_invaders_final\\ranking.txt","a") as ranking:
-            ranking.write(player_name + " " + str(player.score) + " " + str(SPEED) + "\n")
 
 
 def menu_window():
@@ -597,6 +588,17 @@ def ranking_window():
         button_ranking.y = 500 - button_ranking.height
         GAME_STATE = 0
     
+
+def write_in_ranking():
+
+    global player_name
+
+    # Pergunto o nome da pessoa 
+    if not(player_name != ""):
+        player_name = input("Escreva seu nome: ")
+        with open("aulas\\space_invaders_final\\ranking.txt","a") as ranking:
+            ranking.write(player_name + " " + str(player.score) + " " + str(SPEED) + "\n")
+
 
 def create_ranking_lists():
     """
