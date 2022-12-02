@@ -76,6 +76,8 @@ timer = 0
 
 # Sprite dos inimigos
 enemy_image = "aulas\\space_invaders_final\\assets\\monster.png"
+# Sprite do inimigo boss
+enemy_boss_image = "aulas\\space_invaders_final\\assets\\monster_boss.png"
 # Velocidade dos inimigos
 enemy_speed = 200  
 # Direção dos inimigos
@@ -86,6 +88,9 @@ matrix_x = 5
 matrix_y = 5
 # Variável de controle para descida dos enemies
 going_down = False
+# Varíaveis para sortear o boss
+random_x = 0
+random_y = 0
 
 # Sprite do painel de score do ranking
 score_panel_image = "aulas\\space_invaders_final\\assets\\score_panel.png"
@@ -272,14 +277,30 @@ def spawn_enemy():
     global enemies
     global matrix_x
     global matrix_y
+    global random_x
+    global random_y
 
     enemies = [[0 for _ in range(matrix_y)] for _ in range(matrix_x)]
-
+    # Sorteio num número aleatório para ser o mosntro boss
+    random_x = random.randint(0, matrix_x - 1)
+    random_y = random.randint(0, matrix_y - 1)
+    
     # for x e for y percorrem cada elemento da matriz
     for x in range(matrix_x):
         for y in range(matrix_y):
-            # Cria o Sprite do inimigo
-            enemy = Sprite(enemy_image)
+            # Se chegou no boss
+            if (x == random_x) and (y == random_y):
+                # Põe o Sprite vermelho do boss
+                enemy = Sprite(enemy_boss_image)
+                # Põe as vidas dele
+                enemy.lives = 3
+                # Bota uma "tag" nele
+                enemy.boss = 1
+            else:
+                # Cria o Sprite do inimigo normal
+                enemy = Sprite(enemy_image)
+                # Bota uma "tag" nele
+                enemy.boss = 0
             # Define a posição
             enemy.set_position(x * enemy.width, y * enemy.height)
             # Define a direção do movimento, no caso para baixo
@@ -399,7 +420,7 @@ def player_shoot():
     # Verifica se o jogador apertou o botão de disparar
     if keyboard.key_pressed("space"):
         # Verifica se já pode disparar
-        if player.shoot_tick > player.shoot_delay:
+        if (player.shoot_tick > player.shoot_delay) and (player.invincible == 0):
             # Chama a função shoot(), para que ela efetue do disparo
             shoot(player, bullets)
 
@@ -489,7 +510,23 @@ def check_enemy_collision(b):
                     # inimigo do jogo
 
                         bullets.remove(b)
-                        enemies[row][column].exist = 0
+
+                        # Checa se ele é o boss
+                        if enemies[row][column].boss == 1:
+                            enemies[row][column].lives -= 1
+                            if enemies[row][column].lives == 1:
+                                x = enemies[row][column].x
+                                y = enemies[row][column].y
+                                shoot_delay = enemies[row][column].shoot_delay                         
+                                enemies[row][column] = Sprite(enemy_image)
+                                enemies[row][column].shoot_delay = shoot_delay
+                                enemies[row][column].direction = 1
+                                enemies[row][column].set_position(x,y)
+                                enemies[row][column].shoot_tick = 0
+                                enemies[row][column].exist = 1
+                                enemies[row][column].boss = 0
+                        else:
+                            enemies[row][column].exist = 0
 
                         # Atualiza a pontuação do jogador
                         player.score += 60/time_score
